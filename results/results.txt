@@ -1,0 +1,4 @@
+unet_fold0: 0.8942
+unet_fold1: 0.9012
+aghct_fold0: 0.8976
+aghct_fold1: 0.8970
