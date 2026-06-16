@@ -76,6 +76,9 @@ def build_model(model_name: str, config: dict) -> nn.Module:
         from models.transunet import TransUNet  # lazy: requires timm
 
         return TransUNet()
+    if model_name == "attention_unet":
+        from models.attention_unet import AttentionUNet
+        return AttentionUNet(base_channels=config["model"].get("base_channels", 64))
     raise ValueError(f"Unknown model: {model_name}")
 
 
@@ -244,7 +247,7 @@ def load_checkpoint(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/config.yaml")
-    parser.add_argument("--model", choices=["aghct", "unet", "transunet"], required=True)
+    parser.add_argument("--model", choices=["aghct", "unet", "transunet", "attention_unet"], required=True)
     parser.add_argument("--dataset", choices=["isic", "drive"], required=True)
     parser.add_argument("--fold", type=int, default=0)
     parser.add_argument("--fraction", type=float, default=1.0)
