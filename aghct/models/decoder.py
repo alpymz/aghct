@@ -54,6 +54,7 @@ class DecoderBlock(nn.Module):
                 num_heads=cfg.get("num_heads", 8),
                 num_layers=max(1, cfg.get("num_transformer_layers", 4) // 2),
                 se_reduction=cfg.get("se_reduction_ratio", 16),
+                mode=cfg.get("mode", "full"),
             )
         else:
             self.dagm = nn.Identity()
