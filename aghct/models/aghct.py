@@ -53,6 +53,7 @@ class AGHCT(nn.Module):
                     num_heads=int(dagm_cfg["num_heads"]),
                     num_layers=int(dagm_cfg["num_transformer_layers"]),
                     se_reduction=int(dagm_cfg["se_reduction_ratio"]),
+                    mode=dagm_cfg.get("mode", "full"),
                 )
                 for ch in enc_channels
             ]
