@@ -233,20 +233,32 @@ class DAGM(nn.Module):
         num_heads: int = 8,
         num_layers: int = 4,
         se_reduction: int = 16,
+        mode: str = "full",
     ):
         super().__init__()
-        self.se_branch = SEBranch(channels, se_reduction)
-        self.lwt_branch = LWTBranch(
-            channels, window_size=window_size, num_heads=num_heads, num_layers=num_layers
-        )
-        self.gate_conv = nn.Sequential(
-            nn.Conv2d(channels * 2, channels, kernel_size=1, bias=True),
-            nn.Sigmoid(),
-        )
+        assert mode in ("full", "se_only", "lwt_only"), f"Invalid mode: {mode}"
+        self.mode = mode
+        
+        if mode in ("full", "se_only"):
+            self.se_branch = SEBranch(channels, se_reduction)
+        if mode in ("full", "lwt_only"):
+            self.lwt_branch = LWTBranch(
+                channels, window_size=window_size, num_heads=num_heads, num_layers=num_layers
+            )
+        if mode == "full":
+            self.gate_conv = nn.Sequential(
+                nn.Conv2d(channels * 2, channels, kernel_size=1, bias=True),
+                nn.Sigmoid(),
+            )
         # For visualisation: holds the most recent gate map (eval mode only).
         self.last_gate: torch.Tensor | None = None
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if self.mode == "se_only":
+            return self.se_branch(x)
+        if self.mode == "lwt_only":
+            return self.lwt_branch(x)
+        # full mode
         f_se = self.se_branch(x)
         f_lwt = self.lwt_branch(x)
         alpha = self.gate_conv(torch.cat([f_se, f_lwt], dim=1))
