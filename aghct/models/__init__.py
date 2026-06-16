@@ -3,6 +3,7 @@ from .dagm import DAGM, SEBranch, LWTBranch, LocalWindowTransformerBlock
 from .decoder import Decoder, DecoderBlock
 from .aghct import AGHCT
 from .unet import UNet
+from .attention_unet import AttentionUNet
 
 __all__ = [
     "CNNEncoder",
@@ -16,6 +17,7 @@ __all__ = [
     "AGHCT",
     "UNet",
     "TransUNet",
+    "AttentionUNet",
 ]
 
 
